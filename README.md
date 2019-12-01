@@ -4,9 +4,9 @@
 
 ## 演示地址
 
-####[前端地址](https://blogs.996ico.cn/)
+#### [前端地址](https://blogs.996ico.cn/)
 
-####[后台地址](https://blogs.996ico.cn/login/index/index)
+#### [后台地址](https://blogs.996ico.cn/login/index/index)
 
 **演示账号：adminer 密码：adminer**
 
@@ -31,7 +31,7 @@ node app.js
 
 > **搭建完，请先登录后台地址（后台地址运行起来便知晓），进行登录，默认登录账号：admin 密码：admin**
 
-###搭建请先进入/service/config.json 配置相关信息
+### 搭建请先进入/service/config.json 配置相关信息
 
 
 ```json
@@ -45,7 +45,7 @@ node app.js
 }
 ```
 
-###使用技术
+### 使用技术
 
 > 前端：vue element-ui
 
@@ -53,7 +53,7 @@ node app.js
 
 > 数据库: mongdb
 
-###目录结构
+### 目录结构
 ```
 ├── README.md           
 ├── index.html         // 项目入口文件

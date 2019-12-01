@@ -247,7 +247,7 @@ mongoose.connect(`mongodb://${config.dbAddress}/${config.dbName}`, {useNewUrlPar
   app.use(express.static(path.join(__dirname, '../dist')));
 
   app.listen(3001, () => {
-    console.log('后台地址：http://127.0.0.1/login/index/index')
+    console.log('后台地址：http://127.0.0.1:3001/login/index/index')
   })
 });
 
