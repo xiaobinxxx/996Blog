@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>博客后台管理系统</title>
+  <link rel="shortcut icon" href="/public/images/favicon.ico" />
+  <style>
+    .identity{
+      padding: 0 4%;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      color: #333333;
+      font-size: 16px;
+    }
+  </style>
+  <link rel="stylesheet" href="/public/css/public.css" type="text/css">
+  <link rel="stylesheet" href="/public/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="/public/css/admin.css" type="text/css">
+  <script src="/public/js/jquery-2.1.1.js"></script>
+  <script src="/public/js/index.js"></script>
+  <script src="/public/js/mian.js"></script>
+  <script src="/public/js/popup.js"></script>
+  <script src="/mian.js"></script>
+</head>
+<body>
+<!--页头-->
+<div class="page-head">
+  <div class="logo">
+    <img src="/public/images/logo_b.png" alt="">
+  </div>
+  <div class="user-info">
+    <div class="portrait">
+      <img src="{{AdminInfo.portrait}}" alt="">
+      <span>{{AdminInfo.nickname}}</span>
+    </div>
+    <div class="quit">
+      <img src="/public/images/quit.png" alt="">
+    </div>
+  </div>
+</div>
+<!--页面主体-->
+<div class="page-main">
+  <div class="Side-page">
+    <!-- 分类开始 -->
+    <div class="one-menu">
+      <div class="item">
+        <img src="/public/images/home_icon.png" alt="">
+        <span class="title">首页</span>
+        <span class="more more-up"></span>
+      </div>
+      <div class="two-menu">
+        <a href="/index/index/home" class="item">
+          <span class="title">首页</span>
+        </a>
+      </div>
+    </div>
+    <!-- /分类结束 -->
+    <!-- 分类开始 -->
+    <div class="one-menu">
+      <div class="item">
+        <img src="/public/images/user_icon.png" alt="">
+        <span class="title">会员管理</span>
+        <span class="more more-up"></span>
+      </div>
+      <div class="two-menu">
+        <a href="/member/index/management" class="item">
+          <span class="title">会员列表</span>
+        </a>
+      </div>
+    </div>
+    <!-- /分类结束 -->
+    <!-- 分类开始 -->
+    <div class="one-menu">
+      <div class="item">
+        <img src="/public/images/calss_icon.png" alt="">
+        <span class="title">分类管理</span>
+        <span class="more more-up"></span>
+      </div>
+      <div class="two-menu">
+        <a href="/classifys/index/list" class="item">
+          <span class="title">分类列表</span>
+        </a>
+      </div>
+    </div>
+    <!-- /分类结束 -->
+    <!-- 分类开始 -->
+    <div class="one-menu">
+      <div class="item">
+        <img src="/public/images/arice_icon.png" alt="">
+        <span class="title">文章管理</span>
+        <span class="more more-up"></span>
+      </div>
+      <div class="two-menu">
+        <a href="/articlesa/index/ArticesList" class="item">
+          <span class="title">文章列表</span>
+        </a>
+      </div>
+    </div>
+    <!-- /分类结束 -->
+    <!-- 分类开始 -->
+    <div class="one-menu">
+      <div class="item">
+        <img src="/public/images/ad_icon.png" alt="">
+        <span class="title">广告管理</span>
+        <span class="more more-up"></span>
+      </div>
+      <div class="two-menu">
+        <a href="/Advertising/adertisngList" class="item">
+          <span class="title">广告列表</span>
+        </a>
+        <a href="/Advertising/TagList" class="item">
+          <span class="title">标签列表</span>
+        </a>
+      </div>
+    </div>
+    <!-- /分类结束 -->
+  </div>
+  <div class="content-page">
+    {% if AdminInfo.isBlogger && !AdminInfo.isAdmin %}
+    <div class="identity">
+      您现在是演示号，无权进行增删改操作！
+    </div>
+    {% endif %}
+    {%block main %}
+
+    {%endblock%}
+  </div>
+</div>
+<!--  弹窗 -->
+<!--<div class="modal-win shadow-lg mb-5 bg-white rounded quit-win" style="padding: 50px 10px !important;">-->
+<!--  <div class="close">X</div>-->
+<!--  <div class="modale">-->
+<!--    <div>确定退出登录吗？</div>-->
+<!--    <button type="button" class="btn btn-success btn-sm quit-btn" style="width: 120px;height: 30px;">确定</button>-->
+<!--  </div>-->
+<!--</div>-->
+<script>
+
+</script>
+</body>
+</html>

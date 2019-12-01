@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<div class="jumbotron">
+  <h1>欢迎光临管理后台</h1>
+  <h3>{{AdminInfo.nickname}}</h3>
+  <div id="main" style="width: 100%;height:400px;"></div>
+</div>
+<script src="/public/js/echarts.min.js"></script>
+<script>
+  // 基于准备好的dom，初始化echarts实例
+  var myChart = echarts.init(document.getElementById('main'));
+
+  // 指定图表的配置项和数据
+  var option = {
+    title: {
+      text: '用户数据统计'
+    },
+    tooltip: {},
+    legend: {
+      data:['数据']
+    },
+    xAxis: {
+      data: ["访问量","注册量","登录量","后台登录","搜索量"]
+    },
+    yAxis: {},
+    series: [{
+      name: '统计量',
+      type: 'bar',
+      data: ['{{DataResult.visitor_volume}}', '{{DataResult.registered_users}}', '{{DataResult.login_volume}}', '{{DataResult.adminlogin_volume}}', '{{DataResult.search_volume}}']
+    }]
+  };
+
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+</script>
+{% endblock %}

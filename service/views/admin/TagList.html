@@ -1,0 +1,182 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+
+<link rel="stylesheet" href="/public/css/management.css">
+
+
+<div class="operation">
+  <div class="statistics">
+    <div class="class-add">
+      <!--      <input type="text" name="tag_name" class="form-control" placeholder="输入标签名称">-->
+      <!--      <input type="text" name="tag_url" class="form-control" placeholder="输入跳转链接">-->
+      <button type="button" class="btn btn-success btn-sm tag-add" onclick="window.location.href='/Advertising/TagAdd'"
+              style="width: 120px;height: 30px;">添加标签
+      </button>
+    </div>
+  </div>
+  <div class="search">
+    <form method="get">
+      <input type="text" name="keyword" class="form-control" placeholder="标签名称">
+      <input type="text" name="page" value="1" style="display: none">
+      <button type="submit" class="btn btn-success btn-sm" style="width: 80px;">搜索</button>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <th>标签ID</th>
+      <th>标签名称</th>
+      <th>跳转链接</th>
+      <th>操作</th>
+    </tr>
+    {% for index,item in BlogrollList %}
+    <tr>
+      <td>{{item.blogroll_id}}</td>
+      <td>{{item.link_name}}</td>
+      <td>{{item.link_url}}</td>
+      <td>
+        <button type="button" value="{{item.blogroll_id}},{{item.link_name}},{{item.link_url}}"
+                class="btn btn-primary btn-sm editClass">修改
+        </button>
+        <button type="button" value="{{item.blogroll_id}}" class="btn btn-danger btn-sm delClass">删除</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <!--  修改分类-->
+  <div class="classify-edit shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="edit">
+      <span class="close">X</span>
+      <input type="text" name="tagedit_name" class="form-control" placeholder="输入标签的名称">
+      <input type="text" name="tagedit_url" class="form-control" placeholder="输入跳转链接">
+      <button type="button" class="btn btn-success btn-sm btn_edit" style="width: 120px;height: 30px;">修改分类</button>
+    </div>
+  </div>
+  {% if page_for.length != 0 %}
+  <!--  分页-->
+  <nav aria-label="Page navigation example" style="display: flex;justify-content: center">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="/Advertising/TagList?page={{page-1}}&keyword={{keyword}}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {% for index,item in page_for %}
+      {% if (index+1) == page %}
+      <li class="page-item active"><a class="page-link"
+                                      href="/Advertising/TagList?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a>
+      </li>
+      {% else %}
+      <li class="page-item"><a class="page-link" href="/Advertising/TagList?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      <li class="page-item">
+        <a class="page-link" href="/Advertising/TagList?page={{page+1}}&keyword={{keyword}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% else %}
+  <div class="empty">
+    <img src="/public/images/empty.png" alt="">
+    <span>暂无内容快去添加吧！</span>
+  </div>
+  {% endif %}
+</div>
+<script>
+  var blogroll_id = '';
+  var link_name = '';
+  var link_url = '';
+
+  /**
+   * 删除标签
+   */
+  $('.delClass').click(function () {
+    blogroll_id = $(this).val();
+    $.ajax({
+      url: '/admin_advertising/index/TagDel',
+      type: 'post',
+      data: {
+        blogroll_id: blogroll_id,
+      },
+      dataType: 'json',
+      success: function (res) {
+        if (res.code != 0) {
+          Toast(res.message, 2000);
+          return
+        }
+        Toast(res.message, 1000, function () {
+          location.reload();
+        });
+      }
+    })
+  });
+  /**
+   * 修改标签弹窗
+   */
+  $('.editClass').click(function () {
+    blogroll_id = $(this).val().split(',')[0];
+    link_name = $(this).val().split(',')[1];
+    link_url = $(this).val().split(',')[2];
+    $('.classify-edit').find('input[name="tagedit_name"]').val(link_name);
+    $('.classify-edit').find('input[name="tagedit_url"]').val(link_url);
+    PopupAlert({
+      width: 300,
+      height: 200,
+      content: '<div class="tag_input"><input type="text" name="tagedit_name" class="form-control tagedit_name" placeholder="输入标签的名称">\n' +
+        '<input type="text" name="tagedit_url" class="form-control tagedit_url" placeholder="输入跳转链接"></div>',
+      InputClass: ['.tagedit_url', '.tagedit_name'],
+      title: '信息'
+    }, function (res) {
+      link_name = res[0];
+      link_url = res[1];
+      if (!link_name) {
+        Toast('标签名称不可为空', 2000);
+        return;
+      }
+      if (!link_url) {
+        Toast('跳转不可为空', 2000);
+        return;
+      }
+      // 判断是否有网络协议
+      if (link_url) {
+        //判断是否符合http://符合返回真不符合返回假
+        var http = /^http:\/\/.*/i.test(link_url);
+        //判断是否符合https://符合返回真不符合返回假
+        var https = /^https:\/\/.*/i.test(link_url);
+        //如果两个都为假，我们就为客户添加http://
+        if (!http && !https) {
+          link_url = 'http://' + link_url;
+        }
+      }
+      $.ajax({
+        url: '/admin_advertising/index/TagEdit',
+        type: 'post',
+        data: {
+          link_name: link_name,
+          blogroll_id: blogroll_id,
+          link_url: link_url,
+        },
+        dataType: 'json',
+        success: function (res) {
+          if (res.code != 0) {
+            Toast(res.message, 2000);
+            return
+          }
+          Toast(res.message, 1000, function () {
+            location.reload();
+          });
+        }
+      });
+    }, function () {
+
+    });
+  });
+</script>
+{% endblock %}

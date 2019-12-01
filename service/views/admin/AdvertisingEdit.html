@@ -1,0 +1,485 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="/public/css/management.css">
+<link href="/public/ImgCropping/css/cropper.min.css" rel="stylesheet">
+<script src="/public/ImgCropping/js/cropper.min.js"></script>
+<div class="shadow-none p-3 mb-5 bg-light rounded">广告编辑</div>
+<style>
+  .adv-list{
+    display: flex;
+    align-items: center;
+    padding: 10px 4%;
+  }
+  .adv-list > .title{
+    display: flex;
+    width: 10%;
+    padding: 0 20px;
+  }
+  .adv-list > .title > i{
+    color: red;
+  }
+  .adv-list > input{
+    width: 70%;
+  }
+  .adv-list .ad_cover{
+    cursor: pointer;
+    width: 200px;
+    height: 100px;
+  }
+  .article-edit{
+    width: 100%;
+    height: 50%;
+  }
+
+  .Submit-article{
+    display: flex;
+    align-items: center;
+    padding: 0 3%;
+    margin-top: 20px;
+  }
+  .form-group{
+    display: flex;
+    align-items: center;
+    width: 30%;
+    margin-bottom: 0 !important;
+  }
+  .form-group > select{
+    width: 60%;
+  }
+  .imgPopUp{
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 11;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    -webkit-touch-callout: none; /* iOS Safari */
+
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+
+    -khtml-user-select: none; /* Konqueror */
+
+    -moz-user-select: none; /* Firefox */
+
+    -ms-user-select: none; /* Internet Explorer/Edge */
+
+    user-select: none; /* Non-prefixed version, currently
+
+not supported by any browser */
+  }
+</style>
+<!--广告类型-->
+<div class="adv-list">
+  <div class="form-group">
+    <label>选择广告类型：</label>
+    {% if AdvInfo %}
+    <select name="adv_type"  class="form-control adv_type">
+      {% if AdvInfo.ad_type == 0 %}
+      <option value="0" selected>首页banner</option>
+      {% else %}
+      <option value="1" selected>侧边热门文章广告</option>
+      {% endif %}
+    </select>
+    {% else %}
+    <select name="adv_type"  class="form-control adv_type">
+      <option value="0">首页banner</option>
+      <option value="1">侧边热门文章广告</option>
+    </select>
+    {% endif %}
+  </div>
+</div>
+<!--跳转方式-->
+<div class="adv-list">
+  <div class="form-group">
+    <label>选择跳转方式：</label>
+    {% if AdvInfo %}
+    <select name="adv_skip"  class="form-control adv_skip">
+      {% if AdvInfo.ad_skip == 0 %}
+      <option value="0" selected>文章</option>
+      {% else %}
+      <option value="1" selected>外链</option>
+      {% endif %}
+    </select>
+    {% else %}
+    <select name="adv_skip"  class="form-control adv_skip">
+      <option value="0">文章</option>
+      <option value="1" selected>外链</option>
+    </select>
+    {% endif %}
+  </div>
+</div>
+
+<div class="adv-list skip_url">
+  <span class="title">链接<i>*</i>:</span>
+  <input type="text" class="form-control" value="{{AdvInfo.skip_link}}" placeholder="请输入链接地址">
+</div>
+
+<div class="adv-list article-skip" style="display: none">
+  <span class="title">文章<i>*</i>:</span>
+  <input type="text" disabled class="form-control" value="{{AdvInfo.article_id}},{{AdvInfo.title}}" placeholder="选择需要跳转的文章">
+</div>
+
+<!--封面-->
+<div class="adv-list">
+  <span class="title">封面<i>*</i>:</span>
+  <div class="text-center">
+    {% if AdvInfo %}
+    <img src="{{AdvInfo.ad_cover}}" class="rounded ad_cover">
+    {% else %}
+    <img src="/public/images/add_c.png" class="rounded ad_cover">
+    {% endif %}
+    <input type="file" id="cover_file" hidden>
+  </div>
+</div>
+<div class="adv-list">
+  {% if AdvInfo %}
+  <button type="button" name="class_add" value="{{AdvInfo._id}}" class="btn btn-success btn-sm adv-edit" style="width: 120px;height: 30px;">确定</button>
+  {% else %}
+  <button type="button" name="class_add"   class="btn btn-success btn-sm adv-add" style="width: 120px;height: 30px;">添加</button>
+  {% endif %}
+</div>
+
+<!--  弹窗 -->
+<div class="modal-win shadow-lg mb-5 bg-white rounded adv" style="padding: 50px 10px !important;">
+  <div class="close">X</div>
+  <div class="modale">
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <th>文章ID</th>
+          <th>封面</th>
+          <th>标题</th>
+          <th>作者</th>
+          <th>所属分类</th>
+          <th>操作</th>
+        </tr>
+      </table>
+      <!--  分页-->
+      <nav aria-label="Page navigation example" style="display: flex;justify-content: center">
+        <ul class="pagination"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!--  图片弹窗 -->
+<div class="imgPopUp" style="display: none">
+  <div class="Popup" style="width: 1000px; height: auto; left: 127px; top: 65.5px;">
+    <div class="title"><span>裁剪</span><span class="cha cancel"></span></div>
+    <div class="conten">
+      <img id="image">
+    </div>
+    <div class="btn"><span class="affirm">确定</span><span class="cancel">取消</span></div>
+  </div>
+</div>
+<script>
+  // 封面图片地址
+  var cover = $(".ad_cover").attr("src")||'';
+  // 封面图片文件流
+  var cover_file = '';
+  // 广告图
+  var adv_cover = '';
+  // 跳转方式
+  var adv_skip = '{{AdvInfo.ad_skip}}';
+  var artiles_id = '{{AdvInfo.article_id}}';
+  var formData = new FormData();
+  let pages = '';
+  let page = 1;
+  let page_for = [];
+  let winHtml = '';
+
+
+  if(adv_skip === '0'){
+    $('.skip_url').hide();
+    $('.article-skip').show();
+  }else{
+    $('.skip_url').show();
+    $('.article-skip').hide();
+  }
+
+  /**
+   * 获取文章
+   */
+  function articleData (){
+    $('.pagination').empty();
+    // 文章列表
+    $.ajax({
+      url: '/admin_advertising/index/ArticlseList',
+      data:{
+        page: page
+      },
+      type: 'get',
+      dataType: 'json',
+      success: function (res) {
+        let ArticlesList = res.data;
+        page_for = res.page_for;
+        let tag = '';
+        pages = '';
+        // 循环文章列表
+        for(let i = 0;i < ArticlesList.length;i++){
+          tag += `<tr>
+          <td>${ArticlesList[i].article_id}</td>
+          <td>
+            <img src="${ArticlesList[i].article_cover}" class="article-cover">
+          </td>
+          <td>${ArticlesList[i].title}</td>
+          <td>${ArticlesList[i].author}</td>
+          <td>${ArticlesList[i].classify.classify_name}</td>
+          <td>
+            <button type="button" value="${ArticlesList[i].article_id}" style="border: none;" data-title="${ArticlesList[i].title}" class="btn-primary btn-sm articleSelect">选择</button>
+          </td>
+        </tr>`
+        }
+
+        // 循环分页数据
+        for(let i = 0; i < page_for.length;i++){
+          if(page == (i+1)){
+            pages += `<li class="page-item active"><a class="page-link" data-page="${i+1}" href="javascript:;">${i+1}</a></li>`;
+          }else{
+            pages += `<li class="page-item"><a class="page-link" data-page="${i+1}" href="javascript:;">${i+1}</a></li>`;
+          }
+        }
+        winHtml = '<div class="table-responsive">\n' +
+          '      <table class="table">\n' +
+          '        <tr>\n' +
+          '          <th>文章ID</th>\n' +
+          '          <th>封面</th>\n' +
+          '          <th>标题</th>\n' +
+          '          <th>作者</th>\n' +
+          '          <th>所属分类</th>\n' +
+          '          <th>操作</th>\n' +
+          '        </tr>\n' +
+          tag +
+          '      </table>\n' +
+          '      <!--  分页-->\n' +
+          '      <nav aria-label="Page navigation example" style="display: flex;justify-content: center">\n' +
+          '        <ul class="pagination">'+pages+'</ul>\n' +
+          '      </nav>\n' +
+          '    </div>';
+        // 插入数据
+        $('.content').html(winHtml);
+      }
+    });
+  }
+  articleData();
+  /**
+   * 文章分页跳转
+   */
+  $(document).on('click','.page-link',function () {
+    page = $(this).text();
+    $(this).parent('li').addClass('active');
+    $(this).parent('li').siblings().removeClass('active');
+    articleData();
+  });
+
+  /**
+   * 选择文章
+   */
+  $(document).on('click','.articleSelect',function () {
+    artiles_id = $(this).val();
+    let title = $(this).context.dataset.title;
+    $('.article-skip').find('input').val(`id:${artiles_id},标题:${title}`);
+    ClosePopup();
+  });
+  /**
+   * 跳转方式变化
+   */
+  $('.adv_skip').change(function () {
+    adv_skip = $(this).val();
+    if(adv_skip === '0'){
+      $('.skip_url').hide();
+      $('.article-skip').show();
+      // 判断是否有文章
+      if(page_for.length === 0){
+        Toast('您还没有添加文章，快去添加吧！',1000,function () {
+          sessionStorage.setItem('RouterIndex','3');
+          sessionStorage.setItem('RouterIdx','0');
+          window.location.replace('/articlesa/index/ArticesList');
+        });
+        return;
+      }
+      PopupHtml({
+        width: 800,
+        height: 600,
+        content: winHtml,
+        title: '选择文章'
+      });
+    }else{
+      $('.skip_url').show();
+      $('.article-skip').hide();
+      ClosePopup();
+    }
+  });
+
+  /**
+   * 选择文章弹窗
+   */
+  $('.article-skip').click(function () {
+    // 判断有没有文章
+    if(page_for.length === 0){
+      Toast('您还没有添加文章，快去添加吧！',1000,function () {
+        sessionStorage.setItem('RouterIndex','3');
+        sessionStorage.setItem('RouterIdx','0');
+        window.location.replace('/articlesa/index/ArticesList');
+      });
+      return;
+    }
+    PopupHtml({
+      width: 800,
+      height: 600,
+      content: winHtml,
+      title: '选择文章'
+    });
+  });
+  /**
+   * 图片点击
+   */
+  $('.ad_cover').click(function () {
+    $('#cover_file').click();
+    $('#cover_file').on('change',function (file) {
+      cover_file = file.target.files[0];
+      cover = URL.createObjectURL(cover_file);
+      var imgName = cover_file.name;
+
+
+      var reader = new FileReader();
+      reader.onload = function (evt) {
+        var replaceSrc = evt.target.result;
+        //更换cropper的图片
+        $('#image').cropper('replace', replaceSrc, false);//默认false，适应高度，不失真
+      };
+      reader.readAsDataURL(cover_file);
+      console.log(111)
+      // 弹窗显示
+      $('.imgPopUp').show();
+      // 弹窗确认
+      $('.imgPopUp').find('.affirm').on('click',function () {
+        var cas = $('#image').cropper('getCroppedCanvas');// 获取被裁剪后的canvas
+        var base64 = cas.toDataURL('image/jpeg'); // 转换为base64
+        if (base64) {
+          //调用 转成file
+          cover_file = dataURLtoFile(base64, imgName);
+          $(".ad_cover").attr("src", base64); //将图片路径存入src中，显示出图片
+        }
+        $('.imgPopUp').hide();
+      });
+      // 弹窗取消
+      $('.imgPopUp').find('.cancel').on('click',function () {
+        $('.imgPopUp').hide();
+      });
+
+      //裁剪图片实例
+      $('#image').cropper({
+        aspectRatio: 16 / 9,
+        minCropBoxWidth: 680,
+        minCropBoxHeight: 280,
+        viewMode:1,
+        dragMode:'none',
+        preview:".small",
+        responsive:false,
+        cropBoxResizable: true,
+        crop: function (e) {
+          // 输出结果数据裁剪图像。
+        }
+      });
+    })
+  });
+  /**
+   * 提交函数
+   */
+  function subimt(){
+    // 封面
+    adv_cover = cover;
+
+    if(adv_cover==''){
+      Toast('有必填项未填写！！！',2000);
+      return;
+    }
+    console.log(cover_file);
+    formData.append('file', cover_file);
+    // 判断是否选择文件
+    if(cover_file != ''){
+      $.ajax({
+        url: '/upload/index/images',
+        type: 'post',
+        async:false,
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function (res) {
+          adv_cover = res.data.url;
+        }
+
+      });
+    }
+  }
+
+  // 添加文章
+  $('.adv-add').click(function () {
+    let adv_type = $('.adv_type').val();
+    let adv_skip = $('.adv_skip').val();
+    let skip_link = $('.skip_url').find('input').val();
+    subimt();
+    $.ajax({
+      url: '/admin_advertising/index/advEdit',
+      data:{
+        ad_type: adv_type,
+        ad_skip: adv_skip,
+        article_id: artiles_id,
+        ad_cover: adv_cover,
+        skip_link: skip_link,
+        Adv_type: 0,
+      },
+      type: 'post',
+      dataType: 'json',
+      success: function (res) {
+        if(res.code != 0){
+          Toast(res.message);
+          return;
+        }
+        Toast(res.message,1000,function () {
+          window.location.href = '/Advertising/adertisngList'
+        });
+      }
+    });
+  });
+
+  // 修改文章
+  $('.adv-edit').click(function () {
+    let adv_type = $('.adv_type').val();
+    let adv_skip = $('.adv_skip').val();
+    let skip_link = $('.skip_url').find('input').val();
+    let Adv_id = $(this).val();
+    subimt();
+    // return
+    $.ajax({
+      url: '/admin_advertising/index/advEdit',
+      data:{
+        ad_type: adv_type,
+        ad_skip: adv_skip,
+        article_id: artiles_id,
+        ad_cover: adv_cover,
+        skip_link: skip_link,
+        Adv_type: 1,
+        Adv_id: Adv_id,
+      },
+      async:false,
+      type: 'post',
+      dataType: 'json',
+      success: function (res) {
+        console.log(res);
+        if(res.code != 0){
+          Toast(res.message);
+          return;
+        }
+        Toast(res.message,1000,function () {
+          window.location.href = '/Advertising/adertisngList'
+        });
+      }
+    });
+  });
+</script>
+{% endblock %}

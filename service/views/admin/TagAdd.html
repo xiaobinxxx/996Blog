@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<style type="text/css">
+
+  .tag-list{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+  }
+  .tag-list > .title{
+    display: flex;
+    width: 15%;
+    padding: 0 20px;
+  }
+  .tag-list > .title > i{
+    color: red;
+  }
+  .tag-list > input{
+    width: 70%;
+  }
+  .tag-list .article_cover{
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+  }
+  .article-edit{
+    width: 100%;
+    height: 50%;
+  }
+
+  .Submit-article{
+    display: flex;
+    align-items: center;
+    padding: 0 3%;
+    margin-top: 20px;
+  }
+  .form-group{
+    display: flex;
+    align-items: center;
+    width: 30%;
+    margin-bottom: 0 !important;
+  }
+  .form-group > select{
+    width: 60%;
+  }
+
+</style>
+<div class="shadow-none p-3 mb-5 bg-light rounded">标签编辑</div>
+<!--标题-->
+<div class="tag-list">
+  <span class="title">标签名称<i>*</i>：</span>
+  <input type="text" name="link_name" class="form-control" placeholder="输入标签的标题">
+</div>
+<!--文章描述-->
+<div class="tag-list">
+  <span class="title">标签链接<i>*</i>:</span>
+  <input type="text" name="link_url" class="form-control" placeholder="输入标签跳转的链接">
+</div>
+<!--提交-->
+<div class="Submit-article">
+  <button type="button" name="tag_add" class="btn btn-success btn-sm tag_add" style="width: 120px;height: 30px;">添加标签</button>
+</div>
+<script>
+  $('.tag_add').click(function () {
+    let link_name = $('input[name="link_name"]').val();
+    let link_url = $('input[name="link_url"]').val();
+
+    // 判断是否有网络协议
+    if (link_url) {
+      //判断是否符合http://符合返回真不符合返回假
+      var http = /^http:\/\/.*/i.test(link_url);
+      //判断是否符合https://符合返回真不符合返回假
+      var https = /^https:\/\/.*/i.test(link_url);
+      //如果两个都为假，我们就为客户添加http://
+      if (!http && !https) {
+        link_url = 'http://' + link_url;
+      }
+    }
+    $.ajax({
+      url: '/admin_advertising/index/TagAdd',
+      data:{
+        link_url:link_url,
+        link_name:link_name,
+      },
+      type: 'post',
+      dataType: 'json',
+      success: function (res) {
+        if(res.code != 0){
+          Toast(res.message);
+          return;
+        }
+        Toast(res.message,1000,function () {
+          window.location.href = '/Advertising/TagList'
+        });
+      }
+    });
+  });
+</script>
+{% endblock %}

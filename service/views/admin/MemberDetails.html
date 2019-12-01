@@ -1,0 +1,130 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="/public/css/MemberDetails.css" type="text/css">
+<!--<div class="panel panel-default">-->
+<!--  <div class="detalis-title">-->
+<!--    <span>会员查看</span>-->
+<!--  </div>-->
+<!--</div>-->
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+
+  <div class="list-group-item">会员查看</div>
+
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>头像</span>
+      </div>
+      <div class="list-right">
+        <img src="{{MemberInfo.portrait}}" class="portrait">
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>照片墙</span>
+      </div>
+      <div class="list-right">
+        <img src="{{MemberInfo.wallpaper}}" class="wallpaper">
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>昵称</span>
+      </div>
+      <div class="list-right">
+        <span>{{MemberInfo.nickname}}</span>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>用户名</span>
+      </div>
+      <div class="list-right">
+        <span>{{MemberInfo.username}}</span>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>签名</span>
+      </div>
+      <div class="list-right">
+        <span>{{MemberInfo.description}}</span>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>介绍</span>
+      </div>
+      <div class="list-right">
+        <span>{{MemberInfo.introduction}}</span>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>用户类型</span>
+      </div>
+      <div class="list-right">
+        {% if MemberInfo.isAdmin %}
+        <span>管理员</span>
+        {% else %}
+        <span>普通用户</span>
+        {% endif %}
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>密码修改</span>
+      </div>
+      <div class="list-right">
+        <button class="btn btn-success btn-sm" id="password_edit">修改</button>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>注册时间</span>
+      </div>
+      <div class="list-right">
+        <span>{{MemberInfo.creationTime|date('Y-m-d H:i:s', -8*60)}}</span>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>信息更改时间</span>
+      </div>
+      <div class="list-right">
+        <span>{{MemberInfo.updateTime|date('Y-m-d H:i:s', -8*60)}}</span>
+      </div>
+    </li>
+  </ul>
+</div>
+<script>
+  $('#password_edit').click(function () {
+    // input 层
+    PopupAlert({
+      width: 300,
+      height: 220,
+      content: '<input type="password" class="form-control InputValue" placeholder="请输入密码">',
+      InputClass: ['.InputValue'], // 想要获取的input class名字（支持多个input，支持id选择器）
+      title: '修改密码'
+    },function (res) {
+      $.ajax({
+        url: '/admin_login/index/changePass',
+        type: 'post',
+        data: {
+          member_id: '{{MemberInfo.member_id}}',
+          password: res[0],
+        },
+        dataType: 'json',
+        success: function (ress) {
+          ClosePopup();
+          Toast(ress.message,2000);
+        }
+      })
+    },function (err) {
+    })
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+
+<link rel="stylesheet" href="/public/css/management.css">
+
+
+<div class="operation">
+  <div class="statistics">
+    <div class="class-add">
+      <input type="text" name="classify_name" class="form-control" placeholder="输入分类名称">
+      <button type="button" name="class_add"  class="btn btn-success btn-sm class-add" style="width: 120px;height: 30px;">添加分类</button>
+    </div>
+  </div>
+  <div class="search">
+    <form method="get">
+      <input type="text" name="keyword" class="form-control" placeholder="分类名称">
+      <input type="text" name="page" value="1" style="display: none">
+      <button type="submit"  class="btn btn-success btn-sm" style="width: 80px;">搜索</button>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <th>分类ID</th>
+      <th>分类名称</th>
+      <th>操作</th>
+    </tr>
+    {% for index,item in ClassifyList %}
+    <tr>
+      <td>{{item.class_id.toString()}}</td>
+      <td>{{item.classify_name}}</td>
+      <td>
+        <button type="button" value="{{item.class_id.toString()}},{{item.classify_name}}" class="btn btn-primary btn-sm editClass">修改</button>
+        <button type="button" value="{{item.class_id.toString()}}" class="btn btn-danger btn-sm delClass">删除</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if page_for.length != 0 %}
+  <nav aria-label="Page navigation example" style="display: flex;justify-content: center">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="/classifys/index/list?page={{page-1}}&keyword={{keyword}}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {% for index,item in page_for %}
+      {% if (index+1) == page %}
+      <li class="page-item active"><a class="page-link" href="/classifys/index/list?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a></li>
+      {% else %}
+      <li class="page-item"><a class="page-link" href="/classifys/index/list?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a></li>
+      {% endif %}
+      {% endfor %}
+      <li class="page-item">
+        <a class="page-link" href="/classifys/index/list?page={{page+1}}&keyword={{keyword}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% else %}
+  <div class="empty">
+    <img src="/public/images/empty.png" alt="">
+    <span>暂无内容快去添加吧！</span>
+  </div>
+  {% endif %}
+</div>
+<script>
+  var class_id = '';
+  var classify_name = '';
+  /**
+   * 添加分类
+   */
+  $('.class-add').find('.class-add').click(function () {
+    classify_name = $('input[name="classify_name"]').val();
+    if(!classify_name){
+      Toast('分类名称不可为空',2000);
+      return;
+    }
+    $.ajax({
+      url: '/admin_classify/index/ClassAdd',
+      type: 'post',
+      data:{
+        classify_name:classify_name,
+      },
+      dataType: 'json',
+      success: function (res) {
+        if(res.code != 0){
+          Toast(res.message,2000);
+          return
+        }
+        Toast(res.message,1000,function () {
+          location.reload();
+        });
+      }
+    });
+  });
+
+  /**
+   * 删除分类
+   */
+  $('.delClass').click(function () {
+    class_id = $(this).val();
+    $.ajax({
+      url: '/admin_classify/index/ClassDel',
+      type: 'post',
+      data:{
+        class_id: class_id,
+      },
+      dataType: 'json',
+      success: function (res) {
+        if(res.code != 0){
+          Toast(res.message,2000);
+          return
+        }
+        Toast(res.message,2000,function () {
+          location.reload();
+        });
+      }
+    })
+  });
+  /**
+   * 修改分类弹窗
+   */
+  $('.editClass').click(function () {
+    class_id = $(this).val().split(',')[0];
+    classify_name = $(this).val().split(',')[1];
+    PopupAlert({
+      width: 300,
+      height: 200,
+      content: '<input type="text" name="class_edit" value="'+ classify_name +'" class="form-control class_input" placeholder="输入修改的分类">',
+      InputClass: ['.class_input'],
+      title: '信息'
+    },function (res) {
+      classify_name = res[0];
+      if(!classify_name){
+        Toast('分类名称不可为空',2000);
+        return;
+      }
+      $.ajax({
+        url: '/admin_classify/index/edit',
+        type: 'post',
+        data:{
+          classify_name:classify_name,
+          class_id: class_id,
+        },
+        dataType: 'json',
+        success: function (res) {
+          if(res.code != 0){
+            Toast(res.message,2000);
+            return
+          }
+          Toast(res.message,2000,function () {
+            location.reload();
+          });
+        }
+      });
+    },function () {
+
+    });
+  });
+  /**
+   * 关闭弹窗
+   */
+  $('.close').click(function () {
+    $('.classify-edit').hide(300);
+  });
+</script>
+{% endblock %}

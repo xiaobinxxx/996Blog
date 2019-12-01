@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="/public/css/management.css">
+
+<div class="operation">
+  <div class="statistics">
+    <div class="class-add">
+      <button type="button" name="class_add"  class="btn btn-success btn-sm artices-add" onclick="window.location.href='/articlesa/index/ArticleAdd'" style="width: 120px;height: 30px;">添加文章</button>
+    </div>
+  </div>
+  <div class="search">
+    <form method="get">
+      <input type="text" name="keyword" class="form-control" placeholder="文章名字/所属分类">
+      <input type="text" name="page" value="1" style="display: none">
+      <button type="submit"  class="btn btn-success btn-sm" style="width: 80px;">搜索</button>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <th>文章ID</th>
+      <th>封面</th>
+      <th>标题</th>
+      <th>作者</th>
+      <th>评论</th>
+      <th>点击</th>
+      <th>所属分类</th>
+      <th>发布时间</th>
+      <th>最近一次修改</th>
+      <th>操作</th>
+    </tr>
+    {% for index,item in ArticleList %}
+    <tr>
+      <td>{{item.article_id}}</td>
+      <td>
+        <img src="{{item.article_cover}}" class="article-cover">
+      </td>
+      <td>{{item.title}}</td>
+      <td>{{item.author}}</td>
+      <td>{{item.comments}}</td>
+      <td>{{item.pageview}}</td>
+      <td>{{item.classify.classify_name}}</td>
+      <td>{{item.release_time|date('Y-m-d H:i:s', -8*60)}}</td>
+      <td>{{item.modification_time|date('Y-m-d H:i:s', -8*60)}}</td>
+      <td>
+        <button type="button" value="{{item.article_id}}" class="btn btn-primary btn-sm editArticle">修改</button>
+        <button type="button" value="{{item.article_id}}" class="btn btn-danger btn-sm delArticle">删除</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if page_for.length != 0 %}
+  <!--  分页-->
+  <nav aria-label="Page navigation example" style="display: flex;justify-content: center">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="/articlesa/index/ArticesList?page={{page-1}}&keyword={{keyword}}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {% for index,item in page_for %}
+      {% if (index+1) == page %}
+      <li class="page-item active"><a class="page-link" href="/classifys/index/list?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a></li>
+      {% else %}
+      <li class="page-item"><a class="page-link" href="/articlesa/index/ArticesList?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a></li>
+      {% endif %}
+      {% endfor %}
+      <li class="page-item">
+        <a class="page-link" href="/articlesa/index/ArticesList?page={{page+1}}&keyword={{keyword}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% else %}
+  <div class="empty">
+    <img src="/public/images/empty.png" alt="">
+    <span>暂无内容快去添加吧！</span>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  var article_id = '';
+  // 修改文章
+  $('.editArticle').click(function () {
+    window.location.href = '/articlesa/index/ArticleEdit?article_id=' + $(this).val();
+  });
+  /**
+   * 修改分类弹窗
+   */
+  $('.delArticle').click(function () {
+    article_id = $(this).val();
+    PopupAlert({
+      width: 300,
+      height: 160,
+      content: '删除此文章，此文章下的评论，阅读数，点击数将会全部消失，确定删除吗？',
+      title: '提示'
+    },function (res) {
+      $.ajax({
+        url: '/admin_articles/index/ArticlesDel',
+        type: 'post',
+        data:{
+          article_id:article_id,
+        },
+        dataType: 'json',
+        success: function (res) {
+          if(res.code != 0){
+            Toast(res.message);
+            return;
+          }
+          Toast(res.message,1000,function () {
+            location.reload();
+          });
+        }
+      })
+    },function (err) {
+      console.log(err)
+    });
+  });
+  /**
+   * 关闭弹窗
+   */
+  $('.close').click(function () {
+    $('.article-win').hide(300);
+  });
+
+  // 删除文章
+  $('.btn_del').click(function () {
+    $.ajax({
+      url: '/admin_articles/index/ArticlesDel',
+      type: 'post',
+      data:{
+        article_id:article_id,
+      },
+      dataType: 'json',
+      success: function (res) {
+        if(res.code != 0){
+          Toast(res.message);
+          return;
+        }
+        location.reload();
+      }
+    })
+  });
+</script>
+{% endblock %}

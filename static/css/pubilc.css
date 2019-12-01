@@ -1,0 +1,147 @@
+/*清除样式*/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  /*font-family: Helvetica;*/
+  font-weight: normal;
+  vertical-align: baseline;
+  outline: none;
+  box-sizing: border-box;
+}
+*{
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -khtml-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+body{
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+img {
+  display: inline-block;
+  border: none;
+  max-width: 100%;
+  box-sizing: content-box !important;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+  border: 0;
+}
+
+a:active, a:focus {
+  outline: none;
+  star: expression(this.onFocus=this.blur());
+}
+
+a:hover, a:link, a:visited, a:active {
+  text-decoration: none;
+}
+
+input[type="button"], input[type="submit"], input[type="text"], input[type="search"], input[type="password"], input[type="tel"], input[type="reset"], input[type="number"] {
+  /*-webkit-appearance: none;*/
+  /*box-shadow: 0 0 0 rgba(0, 0, 0, 0);*/
+  /*border: none;*/
+  /*outline: none;*/
+  /*padding: 0;*/
+  /*border-radius: 0;*/
+}
+
+label {
+  font-weight: normal;
+}
+
+input {
+  outline: none;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  -o-user-select: auto;
+  user-select: auto;
+}
+
+/* 如果有输入内容IE会给输入框右边加一个大大的X */
+input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* 去掉number输入框右边点击上下的小三角 */
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* 去掉search搜索框右边小叉*/
+::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* IE浏览器对输入控件有自己的font-family，需要统一 */
+input,
+textarea,
+button {
+  /*font-family: inherit;*/
+}
+
+/* IOS Safari在横屏的时候会放大字体，第二个属性让滑动更流畅 */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-overflow-scrolling: touch;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  height: 100%;
+}
+
+
+/* Chrome浏览器会在输入控制聚集的时候添加一个蓝色的outline*/
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/*去掉浏览器输入框黄色背景：*/
+input:-webkit-autofill {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+
+@-webkit-keyframes autofill {
+  to {
+    /*color: #fff;*/
+    background: transparent;
+  }
+}
+
+select {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+  padding-right: 14px;
+}
+
+select::-ms-expand {
+  display: none;
+}

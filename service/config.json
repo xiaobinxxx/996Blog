@@ -1,0 +1,8 @@
+{
+  "//": "db数据库地址",
+  "dbAddress": "localhost:27017",
+  "//": "db数据库",
+  "dbName": "Blogs",
+  "//": "服务器域名",
+  "host": "http://blogs.996ico.cn"
+}

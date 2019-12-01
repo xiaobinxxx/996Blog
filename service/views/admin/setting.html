@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="/public/css/MemberDetails.css" type="text/css">
+<!--<div class="panel panel-default">-->
+<!--  <div class="detalis-title">-->
+<!--    <span>会员查看</span>-->
+<!--  </div>-->
+<!--</div>-->
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">设置</div>
+
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">
+      <div class="list-left">
+        <span>logo</span>
+      </div>
+      <div class="list-right">
+        <img src="{{settingInfo.logo_url}}" id="logo" class="portrait">
+        <input type="file" id="logo_file" hidden>
+      </div>
+    </li>
+  </ul>
+</div>
+<script>
+  // 封面图片文件流
+  var cover_file = '';
+  var cover = '';
+  /**
+   * logo点击
+   */
+  $('#logo').click(function () {
+    $('#logo_file').click();
+    $('#logo_file').on('change',function (file) {
+      var formData = new FormData()
+      cover_file = file.target.files[0];
+      cover = URL.createObjectURL(cover_file);
+      formData.append('file', cover_file);
+      if (cover) {
+        $("#logo").attr("src", cover) ; //将图片路径存入src中，显示出图片
+      }
+
+      // 上传
+      $.ajax({
+        url: '/upload/index/images',
+        type: 'post',
+        async:false,
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function (res) {
+          $.ajax({
+            url: '/admin/setting/logo',
+            type: 'post',
+            data: {
+             logo_url: res.data.url
+            },
+            dataType: 'json',
+            success: function (res) {
+              if(res.code != 0){
+                Toast(res.message);
+                return;
+              }
+            }
+          })
+        }
+      });
+    })
+  });
+</script>
+{% endblock %}

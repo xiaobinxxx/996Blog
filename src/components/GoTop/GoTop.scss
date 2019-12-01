@@ -1,0 +1,19 @@
+.page-table{
+  position: fixed;
+  bottom: 10%;
+  right: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #333333;
+  cursor: pointer;
+  .go-top{
+    width: 24px;
+    height: 24px;
+    border-right: 2px solid #999999;
+    border-top: 2px solid #999999;
+    transform: rotate(-45deg);
+  }
+}

@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="/public/css/management.css">
+
+<div class="operation">
+  <div class="statistics">
+    <div class="class-add">
+      <button type="button" name="class_add"  class="btn btn-success btn-sm artices-add" onclick="window.location.href='/Advertising/adertisngAdd?Adv_type=0'" style="width: 120px;height: 30px;">添加广告</button>
+    </div>
+  </div>
+<!--  <div class="search">-->
+<!--    <form method="get">-->
+<!--      <input type="text" name="keyword" class="form-control" placeholder="广告名字">-->
+<!--      <input type="text" name="page" value="1" style="display: none">-->
+<!--      <button type="submit"  class="btn btn-success btn-sm" style="width: 80px;">搜索</button>-->
+<!--    </form>-->
+<!--  </div>-->
+</div>
+
+
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <th>广告ID</th>
+      <th>封面</th>
+      <th>类型</th>
+      <th>跳转类型</th>
+      <th>操作</th>
+    </tr>
+    {% for item in AdvertisingList %}
+    <tr>
+      <td>{{item.adv_id}}</td>
+      <td>
+        <img src="{{item.ad_cover}}" class="article-cover">
+      </td>
+      {% if item.ad_type == 0 %}
+      <td>banner广告</td>
+      {% elseif item.ad_type == 1 %}
+      <td>热门文章广告</td>
+      {% endif %}
+      {% if item.ad_skip == 0 %}
+      <td>文章</td>
+      {% elseif item.ad_skip == 1 %}
+      <td>外链</td>
+      {% endif %}
+      <td>
+        <button type="button" value="{{item.adv_id}}" class="btn btn-primary btn-sm editAdv">编辑</button>
+        <button type="button" value="{{item.adv_id}}" class="btn btn-danger btn-sm delAdv">删除</button>
+      </td>
+      {% endfor %}
+    </tr>
+  </table>
+  {% if page_for.length != 0 %}
+  <!--  分页-->
+  <nav aria-label="Page navigation example" style="display: flex;justify-content: center">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="/Advertising/adertisngList?page={{page-1}}&keyword={{keyword}}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {% for index,item in page_for %}
+      {% if (index+1) == page %}
+      <li class="page-item active"><a class="page-link" href="/Advertising/adertisngList?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a></li>
+      {% else %}
+      <li class="page-item"><a class="page-link" href="/Advertising/adertisngList?page={{index+1}}&keyword={{keyword}}">{{index+1}}</a></li>
+      {% endif %}
+      {% endfor %}
+      <li class="page-item">
+        <a class="page-link" href="/Advertising/adertisngList?page={{page+1}}&keyword={{keyword}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% else %}
+  <div class="empty">
+    <img src="/public/images/empty.png" alt="">
+    <span>暂无内容快去添加吧！</span>
+  </div>
+  {% endif %}
+</div>
+<script src="/public/js/AdvertisingAdmin.js"></script>
+{% endblock %}

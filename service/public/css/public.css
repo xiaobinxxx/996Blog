@@ -1,0 +1,385 @@
+/*清除样式*/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  /*font-family: Helvetica;*/
+  font-weight: normal;
+  vertical-align: baseline;
+  outline: none;
+  box-sizing: border-box;
+}
+*{
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -khtml-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+body{
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+img {
+  display: inline-block;
+  border: none;
+  max-width: 100%;
+  box-sizing: content-box !important;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+  border: 0;
+}
+
+a:active, a:focus {
+  outline: none;
+  star: expression(this.onFocus=this.blur());
+}
+
+a:hover, a:link, a:visited, a:active {
+  text-decoration: none;
+}
+
+input[type="button"], input[type="submit"], input[type="text"], input[type="search"], input[type="password"], input[type="tel"], input[type="reset"], input[type="number"] {
+  /*-webkit-appearance: none;*/
+  /*box-shadow: 0 0 0 rgba(0, 0, 0, 0);*/
+  /*border: none;*/
+  /*outline: none;*/
+  /*padding: 0;*/
+  /*border-radius: 0;*/
+}
+
+label {
+  font-weight: normal;
+}
+
+input {
+  outline: none;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  -o-user-select: auto;
+  user-select: auto;
+}
+
+/* 如果有输入内容IE会给输入框右边加一个大大的X */
+input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* 去掉number输入框右边点击上下的小三角 */
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* 去掉search搜索框右边小叉*/
+::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* IE浏览器对输入控件有自己的font-family，需要统一 */
+input,
+textarea,
+button {
+  /*font-family: inherit;*/
+}
+
+/* IOS Safari在横屏的时候会放大字体，第二个属性让滑动更流畅 */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-overflow-scrolling: touch;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  height: 100%;
+}
+
+
+/* Chrome浏览器会在输入控制聚集的时候添加一个蓝色的outline*/
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/*去掉浏览器输入框黄色背景：*/
+input:-webkit-autofill {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+
+@-webkit-keyframes autofill {
+  to {
+    /*color: #fff;*/
+    background: transparent;
+  }
+}
+
+select {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+  padding-right: 14px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+/*询问框*/
+.modal-win{
+  display: none;
+  position: fixed;
+  z-index: 111;
+  left: 50%;
+  top: 50%;
+  background-color: #FFFFFF;
+  transform: translate(-50%,-50%);
+  border-radius: 10px;
+  /*width: 300px;*/
+}
+.modal-win .close{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.modal-win .modale{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.modal-win .modale button{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+/*无数据*/
+.empty{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 300px;
+}
+.empty > img{
+  width: 160px;
+  height: 160px;
+}
+.empty > span{
+  font-size: 24px;
+  margin-top: 10px;
+}
+
+
+
+/*弹出层*/
+.Popups{
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+  -webkit-touch-callout: none; /* iOS Safari */
+
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+
+  -khtml-user-select: none; /* Konqueror */
+
+  -moz-user-select: none; /* Firefox */
+
+  -ms-user-select: none; /* Internet Explorer/Edge */
+
+  user-select: none; /* Non-prefixed version, currently
+
+not supported by any browser */
+}
+.Popup{
+  position: absolute;
+  /*left: 50%;*/
+  /*top: 50%;*/
+  z-index: 12;
+  min-width: 260px;
+  min-height: 160px;
+  /*transform: translate(-50%,-50%);*/
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-bottom: 10px;
+  /*transition: all 0.5s;*/
+}
+.Popup .title{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+  height: 40px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #333;
+  overflow: hidden;
+  background-color: #F8F8F8;
+  border-radius: 2px 2px 0 0;
+  cursor: all-scroll;
+}
+.Popup .title > span{
+  color: #333333;
+  font-size: 14px;
+}
+.Popup .title > .cha{
+  width: 16px;
+  height: 16px;
+  position: relative;
+  cursor: pointer;
+}
+.Popup .title > .cha::before,
+.Popup .title > .cha::after{
+  content: "";
+  position: absolute;  /*方便进行定位*/
+  height: 16px;
+  width: 1.5px;
+  top: 2px;
+  right: 9px;  /*设置top和right使图像在20*20框中居中*/
+  background: #333333;
+}
+.Popup .title > .cha::before{
+  transform: rotate(45deg);  /*进行旋转*/
+}
+.Popup .title > .cha::after{
+  transform: rotate(-45deg);
+}
+.Popup .content{
+  padding: 20px;
+  color: #333333;
+  font-size: 14px;
+}
+.Popup .btn{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 4%;
+  height: 40px;
+}
+.Popup .btn > span{
+  height: 28px;
+  line-height: 28px;
+  margin: 5px 5px 0;
+  padding: 0 15px;
+  border: 1px solid #dedede;
+  background-color: #fff;
+  color: #333;
+  border-radius: 2px;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+.Popup .btn > .affirm{
+  border-color: #fcb03b;
+  background-color: #fcb03b;
+  color: #fff;
+}
+/*loading 样式*/
+.Popups .loadEffect{
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: scale(0.3) translate(-50%,-50%);
+}
+.Popups .loadEffect span{
+  display: inline-block;
+  width: 30px;
+  height: 10px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  background: #333333;
+  position: absolute;
+  -webkit-animation: load 1.04s ease infinite;
+}
+@-webkit-keyframes load{
+  0%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0.2;
+  }
+}
+.Popups .loadEffect span:nth-child(1){
+  left: 0;
+  top: 50%;
+  margin-top:-5px;
+  -webkit-animation-delay:0.13s;
+}
+.Popups .loadEffect span:nth-child(2){
+  left: 10px;
+  top: 20px;
+  -webkit-transform: rotate(45deg);
+  -webkit-animation-delay:0.26s;
+}
+.Popups .loadEffect span:nth-child(3){
+  left: 50%;
+  top: 10px;
+  margin-left: -15px;
+  -webkit-transform: rotate(90deg);
+  -webkit-animation-delay:0.39s;
+}
+.Popups .loadEffect span:nth-child(4){
+  top: 20px;
+  right:10px;
+  -webkit-transform: rotate(135deg);
+  -webkit-animation-delay:0.52s;
+}
+.Popups .loadEffect span:nth-child(5){
+  right: 0;
+  top: 50%;
+  margin-top:-5px;
+  -webkit-transform: rotate(180deg);
+  -webkit-animation-delay:0.65s;
+}
+.Popups .loadEffect span:nth-child(6){
+  right: 10px;
+  bottom:20px;
+  -webkit-transform: rotate(225deg);
+  -webkit-animation-delay:0.78s;
+}
+.Popups .loadEffect span:nth-child(7){
+  bottom: 10px;
+  left: 50%;
+  margin-left: -15px;
+  -webkit-transform: rotate(270deg);
+  -webkit-animation-delay:0.91s;
+}
+.Popups .loadEffect span:nth-child(8){
+  bottom: 20px;
+  left: 10px;
+  -webkit-transform: rotate(315deg);
+  -webkit-animation-delay:1.04s;
+}
+
+
+

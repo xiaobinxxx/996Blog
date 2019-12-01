@@ -1,0 +1,120 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<link rel="stylesheet" href="/public/css/management.css">
+
+
+<div class="operation">
+  <div class="statistics">
+    <span>共{{total}}条记录  每页 {{limit}} 条 总页数 {{pages}}</span>
+  </div>
+  <div class="search">
+    <form method="get">
+      <input type="text" name="keyword" class="form-control" id="exampleInputName2" placeholder="会员昵称/账号">
+      <input type="text" name="page" value="1" style="display: none">
+      <button type="submit"  class="btn btn-success btn-sm" style="width: 80px;">搜索</button>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <th>会员ID</th>
+      <th>用户头像</th>
+      <th>用户昵称</th>
+      <th>用户账号</th>
+      <th>用户类型</th>
+      <th>注册时间</th>
+      <th>操作</th>
+    </tr>
+    {% for item in MemberList %}
+    <tr class="{{item.isDefriend}}">
+      <td>{{item.member_id.toString()}}</td>
+      <td><img src="{{item.portrait}}" class="portrait"></td>
+      <td>{{item.nickname}}</td>
+      <td>{{item.username}}</td>
+      {% if item.isAdmin %}
+      <td>管理员</td>
+      {% else %}
+      <td>普通会员</td>
+      {% endif %}
+      <td>{{item.creationTime|date('Y-m-d H:i:s', -8*60)}}</td>
+      <td>
+        <button type="button" value="{{item.member_id.toString()}}" class="btn btn-primary btn-sm lookUser">查看</button>
+        {% if item.isDefriend %}
+        <button type="button" value="{{item.member_id.toString()}}" class="btn btn-danger btn-sm shiftOut">移出黑名单</button>
+        {% else %}
+        <button type="button" value="{{item.member_id.toString()}}" class="btn btn-danger btn-sm defriend">拉黑</button>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% include 'page.html' %}
+</div>
+<script>
+  $(function () {
+    /**
+     * 查看会员点击
+     */
+    $('.lookUser').click(function () {
+      let member_id = $(this).val();
+      window.location.href = '/member/index/datails?member_id=' + member_id;
+    });
+    /**
+     * 加入黑名单
+     */
+    $('.defriend').click(function () {
+      let member_id = $(this).val();
+      let that = this;
+      PopupAlert({
+        width: 300,
+        content: '确定要拉黑此会员吗？',
+        title: '提示'
+      },function () {
+        $.ajax({
+          url: '/admin_member/index/defriend',
+          type: 'post',
+          data: {
+            member_id:member_id,
+          },
+          dataType: 'json',
+          success:function (res) {
+            if(res.code != 0){
+              Toast(res.message,2000);
+              return
+            }
+            Toast(res.message,1000,function () {
+              location.reload();
+            });
+          }
+        })
+      });
+    });
+    /**
+     * 移出黑名单
+     */
+    $('.shiftOut').click(function () {
+      let member_id = $(this).val();
+      let that = this;
+      $.ajax({
+        url: '/admin_member/index/shiftOut',
+        type: 'post',
+        data: {
+          member_id:member_id,
+        },
+        dataType: 'json',
+        success:function (res) {
+          if(res.code != 0){
+            Toast(res.message,2000);
+            return
+          }
+          Toast(res.message,1000,function () {
+            location.reload();
+          });
+        }
+      })
+    });
+  })
+</script>
+{% endblock %}

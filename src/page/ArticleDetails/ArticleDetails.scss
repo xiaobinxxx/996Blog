@@ -1,0 +1,136 @@
+.page{
+  width: 700px;
+  height: auto;
+  padding: 10px 20px;
+  margin: 10px auto;
+  background-color: #ffffff;
+  overflow: hidden;
+  animation: bounceInUp 1s ease;
+}
+/*文章标题*/
+.artice-title{
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+  .title{
+    display: flex;
+    margin-bottom: 10px;
+    span {
+      font-size: 16px;
+      color: #333333;
+      font-weight: bold;
+    }
+  }
+  .time{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    span{
+      font-size: 12px;
+      color: #787878;
+      margin-right: 10px;
+    }
+  }
+}
+/*描述*/
+.description{
+  width: 90%;
+  height: auto;
+  background-color: rgb(250,250,250);
+  margin: 10px auto;
+  padding: 10px;
+  span{
+    font-size: 12px;
+    color: #787878;
+  }
+}
+/*内容*/
+.content{
+  width: 100%;
+}
+/*评论*/
+.comment{
+  width: 100%;
+  margin:40px auto;
+  animation: bounceInUp 1s ease;
+  .comment-title{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid #eeeeee;
+    span{
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  .comment-btn{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    margin: 20px auto;
+    span{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 40px;
+      background-color: $base;
+      color: #ffffff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+  .comment-list{
+    width: 100%;
+    .list{
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: auto;
+      border-bottom: 1px solid #eeeeee;
+      padding: 10px 0;
+      animation: bounceInUp 1s ease;
+      .head-portrait{
+        display: flex;
+        justify-content: center;
+        width: 20%;
+        img{
+          width: 60px;
+          height: 60px;
+          border-radius: 100%;
+        }
+      }
+      .comment-item{
+        width: 80%;
+        height: auto;
+        .nickname{
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          height: 30px;
+          span{
+            font-size: 14px;
+            color: #333333;
+            font-weight: bold;
+          }
+          span:nth-child(2){
+            font-size: 14px;
+            color: #999999;
+            font-weight: normal;
+          }
+        }
+        .comment-content{
+          width: 100%;
+          span{
+            font-size: 14px;
+            color: #333333;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+}
